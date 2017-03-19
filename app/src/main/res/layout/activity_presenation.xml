@@ -27,6 +27,13 @@
             android:text="Hide"/>
 
         <Button
+            android:id="@+id/b_show_hide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="Show and hide"/>
+
+        <Button
             android:id="@+id/b_show"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
