@@ -7,6 +7,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewPropertyAnimator
+import android.view.animation.AccelerateDecelerateInterpolator
 import kotlinx.android.synthetic.main.activity_presenation.*
 
 const val ANIM_DURATION = 300L
@@ -25,35 +26,40 @@ class PresentationActivity : AppCompatActivity() {
 fun View.fadeInOut(showDuration: Long) = fadeIn { fadeOut(showDuration) }
 
 fun View.fadeOut(delay: Long = 0) {
-    if (this.visibility != VISIBLE || this.alpha == 0f) {
-        this.visibility = GONE
+    if (visibility != VISIBLE || alpha == 0f) {
+        visibility = GONE
         return
     }
 
-    this.animate()
+    newAnimate()
             .alpha(0f)
             .setStartDelay(delay)
             .setDuration(ANIM_DURATION)
-            .setEndListener { this.visibility = GONE }
+            .setEndListener { visibility = GONE }
             .start()
 }
 
 fun View.fadeIn(endAction: () -> Unit = {}) {
-    if (this.visibility == VISIBLE && this.alpha == 1f) {
+    if (visibility == VISIBLE && alpha == 1f) {
         endAction.invoke()
         return
     }
 
-    if (this.visibility != VISIBLE) {
-        this.visibility = VISIBLE
-        this.alpha = 0f
+    if (visibility != VISIBLE) {
+        visibility = VISIBLE
+        alpha = 0f
     }
 
-    this.animate()
+    newAnimate()
             .alpha(1f)
             .setDuration(ANIM_DURATION)
             .setEndListener(endAction)
             .start()
+}
+
+fun View.newAnimate(): ViewPropertyAnimator {
+    animate().setStartDelay(0).setDuration(300).setInterpolator(AccelerateDecelerateInterpolator()).setListener(null).cancel()
+    return animate()
 }
 
 fun ViewPropertyAnimator.setEndListener(listener: () -> Unit) =
