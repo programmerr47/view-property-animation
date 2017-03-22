@@ -59,6 +59,7 @@ fun View.fadeIn(endAction: () -> Unit = {}) {
             .start()
 }
 
+@SuppressLint("NewApi")
 private fun View.newAnimate(): ViewPropertyAnimator {
     animate()
             .setStartDelay(0)
