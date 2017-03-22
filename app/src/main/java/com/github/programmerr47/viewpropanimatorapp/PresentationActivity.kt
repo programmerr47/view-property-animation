@@ -1,6 +1,8 @@
 package com.github.programmerr47.viewpropanimatorapp
 
 import android.animation.Animator
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -57,12 +59,31 @@ fun View.fadeIn(endAction: () -> Unit = {}) {
             .start()
 }
 
-fun View.newAnimate(): ViewPropertyAnimator {
-    animate().setStartDelay(0).setDuration(300).setInterpolator(AccelerateDecelerateInterpolator()).setListener(null).cancel()
+private fun View.newAnimate(): ViewPropertyAnimator {
+    animate()
+            .setStartDelay(0)
+            .setDuration(300)
+            .setInterpolator(AccelerateDecelerateInterpolator())
+            .setListener(null)
+            .applyWhen({ isJellyBean() }) {
+                withEndAction(null)
+                withStartAction(null) }
+            .applyWhen({ isKitKat() }) { setUpdateListener(null) }
+            .cancel()
     return animate()
 }
 
-fun ViewPropertyAnimator.setEndListener(listener: () -> Unit) =
+private inline fun <T> T.applyWhen(predicate: () -> Boolean, action: T.() -> Unit): T {
+    if (predicate()) {
+        action(this)
+    }
+    return this
+}
+
+fun isJellyBean() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+fun isKitKat() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+
+private fun ViewPropertyAnimator.setEndListener(listener: () -> Unit) =
         this.setListener(object : android.animation.AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 super.onAnimationEnd(animation)
